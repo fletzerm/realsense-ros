@@ -166,7 +166,8 @@ namespace realsense2_camera
                                const std::string& from,
                                const std::string& to);
         const rclcpp::ParameterValue declareParameter(const std::string &name, const rclcpp::ParameterValue &default_value=rclcpp::ParameterValue(), const rcl_interfaces::msg::ParameterDescriptor &parameter_descriptor=rcl_interfaces::msg::ParameterDescriptor());
-
+        template<class T>
+        void setNgetNodeParameter(T& param, const std::string& param_name, const T& default_value, const rcl_interfaces::msg::ParameterDescriptor &parameter_descriptor=rcl_interfaces::msg::ParameterDescriptor());
 
     private:
         class CimuData
@@ -195,6 +196,7 @@ namespace realsense2_camera
         cv::Mat& fix_depth_scale(const cv::Mat& from_image, cv::Mat& to_image);
         void clip_depth(rs2::depth_frame depth_frame, float clipping_dist);
         void updateStreamCalibData(const rs2::video_stream_profile& video_profile);
+        void updateExtrinsicsCalibData(const rs2::video_stream_profile& left_video_profile, const rs2::video_stream_profile& right_video_profile);
         void SetBaseStream();
         void publishStaticTransforms();
         void publishDynamicTransforms();
@@ -236,6 +238,7 @@ namespace realsense2_camera
         void registerAutoExposureROIOptions();
         void set_auto_exposure_roi(const std::string variable_name, rs2::sensor sensor, const std::vector<rclcpp::Parameter> & parameters);
         void set_sensor_auto_exposure_roi(rs2::sensor sensor);
+        const rmw_qos_profile_t qos_string_to_qos(std::string str);
         rs2_stream rs2_string_to_stream(std::string str);
         void clean();
 
@@ -248,6 +251,7 @@ namespace realsense2_camera
         float _depth_scale_meters;
         float _clipping_distance;
         bool _allow_no_texture_points;
+        bool _ordered_pc;
 
         double _linear_accel_cov;
         double _angular_velocity_cov;
@@ -257,13 +261,14 @@ namespace realsense2_camera
         std::map<stream_index_pair, int> _width;
         std::map<stream_index_pair, int> _height;
         std::map<stream_index_pair, double> _fps;
+        std::map<stream_index_pair, std::string> _qos;
         std::map<rs2_stream, rs2_format>  _format;
         std::map<stream_index_pair, bool> _enable;
         std::map<rs2_stream, std::string> _stream_name;
         bool _publish_tf;
         double _tf_publish_rate;
         tf2_ros::StaticTransformBroadcaster _static_tf_broadcaster;
-        std::shared_ptr<tf2_ros::StaticTransformBroadcaster> _dynamic_tf_broadcaster;
+        tf2_ros::TransformBroadcaster _dynamic_tf_broadcaster;
         std::vector<geometry_msgs::msg::TransformStamped> _static_tf_msgs;
         std::shared_ptr<std::thread> _tf_t;
 
