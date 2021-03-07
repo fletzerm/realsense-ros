@@ -7,7 +7,7 @@
 
 #define REALSENSE_ROS_MAJOR_VERSION    3
 #define REALSENSE_ROS_MINOR_VERSION    1
-#define REALSENSE_ROS_PATCH_VERSION    3
+#define REALSENSE_ROS_PATCH_VERSION    4
 
 #define STRINGIFY(arg) #arg
 #define VAR_ARG_STRING(arg) STRINGIFY(arg)
@@ -27,6 +27,7 @@
 #define ROS_WARN_COND(cond, ...) RCLCPP_WARN_EXPRESSION(_logger, cond, __VA_ARGS__)
 #define ROS_WARN_STREAM_COND(cond, msg) RCLCPP_WARN_STREAM_EXPRESSION(_logger, cond, msg)
 
+#define ROS_WARN_ONCE(msg) RCLCPP_WARN_ONCE(_logger, msg)
 #define ROS_INFO_STREAM_ONCE(msg) RCLCPP_INFO_STREAM_ONCE(_logger, msg)
 
 namespace realsense2_camera
